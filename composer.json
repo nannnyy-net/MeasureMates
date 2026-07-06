@@ -1,0 +1,6 @@
+{
+    "name": "measuremate/root-wrapper",
+    "description": "Compatibility wrapper for MeasureMate Laravel project",
+    "type": "project",
+    "require": {}
+}

@@ -1,0 +1,480 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Premium AI-inspired dark theme palette */
+    --color-bg-primary: #050A0C;
+    --color-bg-secondary: #0A1418;
+    --color-card: #121B20;
+    --color-surface: #1A2A31;
+
+    --color-accent-primary: #00E5FF;
+    --color-accent-secondary: #00CFC8;
+    --color-highlight: #3ABEFF;
+
+    --color-success-glow: #38F2C2;
+
+    --color-text-primary: #F5F7FA;
+    --color-text-secondary: #A7B4BE;
+    --color-text-muted: #6F808C;
+
+    --color-border: #26353D;
+}
+
+@layer base {
+    html {
+        background: var(--color-bg-primary);
+        color: var(--color-text-primary);
+    }
+
+    body {
+        font-family: var(--font-sans);
+        background: radial-gradient(900px 500px at 20% -10%, rgba(0, 229, 255, 0.12), transparent 55%),
+            radial-gradient(700px 400px at 90% 10%, rgba(0, 207, 200, 0.10), transparent 52%),
+            var(--color-bg-primary);
+        color: var(--color-text-primary);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+        color: inherit;
+    }
+
+    ::selection {
+        background: rgba(0, 229, 255, 0.25);
+    }
+
+    /* Default focus ring */
+    :focus-visible {
+        outline: 2px solid rgba(0, 229, 255, 0.55);
+        outline-offset: 2px;
+    }
+}
+
+@layer components {
+
+    /* Layout */
+    .mm-container {
+        width: 100%;
+        max-width: 1120px;
+        margin-inline: auto;
+        padding: 16px;
+    }
+
+    @media (min-width: 1024px) {
+        .mm-container {
+            padding: 24px;
+        }
+    }
+
+    /* Cards */
+    .mm-card {
+        background: rgba(18, 27, 32, 0.72);
+        border: 1px solid rgba(38, 53, 61, 0.9);
+        border-radius: 14px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+    }
+
+    .mm-card--solid {
+        background: var(--color-card);
+        border: 1px solid rgba(38, 53, 61, 0.95);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Buttons */
+    .mm-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 1;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform 200ms ease, border-color 200ms ease, background-color 200ms ease, box-shadow 200ms ease, color 200ms ease;
+        user-select: none;
+        white-space: nowrap;
+    }
+
+    .mm-btn--primary {
+        background: var(--color-accent-primary);
+        color: #041015;
+        box-shadow: 0 0 0 rgba(0, 229, 255, 0);
+    }
+
+    .mm-btn--primary:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 0 22px rgba(0, 229, 255, 0.35);
+    }
+
+    .mm-btn--secondary {
+        background: transparent;
+        color: var(--color-accent-secondary);
+        border-color: rgba(0, 207, 200, 0.85);
+    }
+
+    .mm-btn--secondary:hover {
+        transform: translateY(-1px) scale(1.02);
+        border-color: rgba(0, 229, 255, 0.9);
+        background: rgba(0, 207, 200, 0.06);
+        box-shadow: 0 0 20px rgba(0, 207, 200, 0.14);
+    }
+
+    .mm-btn--danger {
+        background: rgba(255, 71, 87, 0.12);
+        color: #FFB3BB;
+        border-color: rgba(255, 71, 87, 0.45);
+    }
+
+    .mm-btn--danger:hover {
+        transform: translateY(-1px) scale(1.02);
+        background: rgba(255, 71, 87, 0.18);
+        box-shadow: 0 0 18px rgba(255, 71, 87, 0.2);
+    }
+
+    /* Inputs */
+    .mm-input {
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 12px;
+        background: rgba(10, 20, 24, 0.6);
+        border: 1px solid rgba(38, 53, 61, 0.95);
+        color: var(--color-text-primary);
+        transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+    }
+
+    .mm-input::placeholder {
+        color: rgba(167, 180, 190, 0.7);
+    }
+
+    .mm-input:focus {
+        border-color: rgba(0, 229, 255, 0.85);
+        box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.12);
+    }
+
+    /* Helpers */
+    .mm-text-muted {
+        color: var(--color-text-muted);
+    }
+
+    .mm-text-secondary {
+        color: var(--color-text-secondary);
+    }
+
+    .mm-title {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .mm-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border: 1px solid rgba(38, 53, 61, 0.9);
+        background: rgba(18, 27, 32, 0.6);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .mm-table thead th {
+        position: sticky;
+        top: 0;
+        background: rgba(26, 42, 49, 0.9);
+        color: var(--color-text-secondary);
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 12px;
+        border-bottom: 1px solid rgba(38, 53, 61, 0.9);
+    }
+
+    .mm-table tbody td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(38, 53, 61, 0.65);
+        color: var(--color-text-primary);
+        font-size: 14px;
+    }
+
+    .mm-table tbody tr:hover td {
+        background: rgba(0, 229, 255, 0.06);
+    }
+
+    .mm-alert {
+        border-radius: 14px;
+        border: 1px solid rgba(38, 53, 61, 0.9);
+        background: rgba(18, 27, 32, 0.7);
+        padding: 12px 14px;
+        color: var(--color-text-secondary);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .mm-alert--success {
+        border-color: rgba(56, 242, 194, 0.35);
+        box-shadow: 0 0 0 4px rgba(56, 242, 194, 0.10);
+    }
+
+    .mm-pagination a,
+    .mm-pagination span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(38, 53, 61, 0.9);
+        background: rgba(18, 27, 32, 0.7);
+        color: var(--color-text-secondary);
+        transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .mm-pagination a:hover {
+        transform: scale(1.02);
+        border-color: rgba(0, 229, 255, 0.65);
+        box-shadow: 0 0 18px rgba(0, 229, 255, 0.18);
+    }
+}
+
+/* --- Ingredient Notes: Notepad UI (scoped to new classes only) --- */
+.mm-notepad-shell{
+    position:relative;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(38,53,61,0.9);
+    background:rgba(18,27,32,0.55);
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+    backdrop-filter:blur(10px);
+}
+
+.mm-notepad-shell::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    /* Subtle lined paper */
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.08) 0px,
+            rgba(255,255,255,0.08) 1px,
+            rgba(0,0,0,0) 28px,
+            rgba(0,0,0,0) 29px
+        );
+    opacity:0.22;
+}
+
+.mm-notepad-shell::after{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    pointer-events:none;
+    /* subtle vignette */
+    background:radial-gradient(600px 220px at 20% 0%, rgba(0,229,255,0.14), transparent 55%),
+               radial-gradient(500px 240px at 100% 20%, rgba(0,207,200,0.12), transparent 60%);
+    mix-blend-mode:screen;
+    opacity:0.55;
+}
+
+.mm-notepad-ornament{
+    position:absolute;
+    left:18px;
+    top:12px;
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:rgba(0,229,255,0.08);
+    border:1px solid rgba(0,229,255,0.25);
+    box-shadow:0 0 0 6px rgba(0,229,255,0.05);
+    z-index:3;
+}
+
+.mm-notepad-ornament svg{filter:drop-shadow(0 6px 18px rgba(0,229,255,0.18));}
+
+.mm-notepad-header{
+    position:relative;
+    z-index:2;
+    padding:18px 18px 10px 78px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.mm-notepad-toolbar{
+    position:relative;
+    z-index:2;
+    padding:10px 12px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+}
+
+.mm-notepad-toolbar .mm-tool-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:8px 10px;
+    border-radius:12px;
+    border:1px solid rgba(38,53,61,0.9);
+    background:rgba(10,20,24,0.45);
+    color:var(--color-text-muted);
+    transition:transform 200ms ease, border-color 200ms ease, background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+    cursor:pointer;
+    user-select:none;
+    white-space:nowrap;
+    font-weight:600;
+    font-size:12px;
+}
+
+.mm-notepad-toolbar .mm-tool-btn:hover{
+    transform:translateY(-1px);
+    border-color:rgba(0,229,255,0.6);
+    background:rgba(0,207,200,0.06);
+    color:var(--color-accent-primary);
+    box-shadow:0 0 18px rgba(0,229,255,0.12);
+}
+
+.mm-notepad-writing{
+    position:relative;
+    z-index:2;
+    padding:0 14px 14px 14px;
+}
+
+.mm-notepad-textarea{
+    width:100%;
+    min-height:260px;
+    max-height:420px;
+    resize:vertical;
+    padding:16px 14px;
+    border-radius:16px;
+    border:1px solid rgba(38,53,61,0.95);
+    background:rgba(10,20,24,0.45);
+    color:var(--color-text-primary);
+    outline:none;
+    box-shadow:0 14px 30px rgba(0,0,0,0.25);
+    overflow:auto;
+    line-height:1.65;
+    font-size:14px;
+}
+
+.mm-notepad-textarea:focus{
+    border-color:rgba(0,229,255,0.85);
+    box-shadow:0 0 0 4px rgba(0,229,255,0.12), 0 14px 30px rgba(0,0,0,0.25);
+}
+
+.mm-notepad-meta-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 6px 0;
+    flex-wrap:wrap;
+}
+
+.mm-notepad-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(38,53,61,0.9);
+    background:rgba(10,20,24,0.4);
+    color:var(--color-text-muted);
+    font-size:12px;
+}
+
+.mm-notepad-counter{color:var(--color-text-muted)}
+
+.mm-notepad-card{
+    position:relative;
+    border-radius:14px;
+    border:1px solid rgba(38,53,61,0.6);
+    background:rgba(26,42,49,0.35);
+    overflow:hidden;
+}
+
+.mm-notepad-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, rgba(0,0,0,0) 26px, rgba(0,0,0,0) 27px);
+    opacity:0.14;
+}
+
+.mm-notepad-card > *{position:relative; z-index:1;}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Print stylesheet for production note printing */
+@media print {
+    /* Hide app chrome */
+    aside,
+    nav,
+    header,
+    footer,
+    .mm-container,
+    .mm-card,
+    button,
+    [role="toolbar"],
+    .mm-notepad-toolbar,
+    .tab-panel,
+    .tab-btn,
+    .mm-tool-btn,
+    .mm-btn,
+    .mm-footer {
+        display: none !important;
+    }
+
+    /* Ensure readable defaults */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* A4 margins (supported by modern browsers) */
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+
+    /* Preserve line breaks */
+    .mm-note-body,
+    .whitespace-pre-wrap {
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Prevent splitting within a note */
+    .mm-print-page {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
+
