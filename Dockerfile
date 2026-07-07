@@ -52,14 +52,23 @@ COPY . /app
 # Re-run autoload generation now that artisan exists (allows Laravel package discovery)
 RUN composer dump-autoload --optimize
 
+
+
+# Install Node.js + npm for Vite asset compilation (Railway Docker build image doesn't include Node)
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends nodejs npm \
+  && rm -rf /var/lib/apt/lists/*
+
 # Build frontend assets (Vite)
-# Requires node during build; if node_modules are not available, Railway will still provide node in the build environment.
-RUN if [ -f package.json ]; then \
+RUN if [ -f package.json ] && [ -f package-lock.json ]; then \
       npm ci --no-audit --no-fund && npm run build; \
+    else \
+      echo "package.json or package-lock.json missing; skipping frontend build"; \
     fi
 
 # Production hardening
 RUN php artisan optimize:clear --no-interaction || true
+
 
 # Fix permissions (Railway may mount volumes)
 RUN chown -R appuser:appuser /app/storage /app/bootstrap/cache
