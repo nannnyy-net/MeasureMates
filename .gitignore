@@ -1,18 +1,49 @@
-# --- Laravel ---
-/vendor
-/node_modules
-/.env
-.env.*
-/public/build/
-/public/hot
+# Laravel
+/vendor/
+/node_modules/
 /public/storage
-/storage/*.key
-/storage/pail
-/phpunit.result.cache
-.phpunit.cache
+/storage/logs/*
+/storage/framework/*
+/bootstrap/cache/*
 
-# --- Backup folders (must never be uploaded) ---
-backup_before_cleanup/
-backup_before_repair/
-backup_unused/
+# Environment variables
+/.env
+/.env.*
+
+# Laravel cache / generated files (optional safety)
+# Uncomment if your app generates these at runtime
+# bootstrap/cache/*.php
+
+# Composer
+/composer.lock
+
+# npm
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Windows
+ehthumbs.db
+Icon
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.user
+*.cache
+
+# Logs
+*.log
+
+# PHPUnit
+/.phpunit.result.cache
+
+# Misc
+nbproject/
+*.swp
+*~
 

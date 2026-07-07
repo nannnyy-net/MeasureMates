@@ -1,0 +1,20 @@
+# Railway deployment configuration for a Laravel + Vite app.
+# Place this at the repository root.
+
+[build]
+# Buildpacks will detect the language stack.
+# We explicitly run production installs and build artifacts.
+command = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
+
+[deploy]
+# Run database migrations on deploy, then link storage for user uploads.
+# Note: migrations require DB variables (DATABASE_URL or separate config).
+command = "php artisan storage:link --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force"
+
+[http]
+port = 8000
+
+[start]
+command = "php artisan serve --host 0.0.0.0 --port $PORT"
+
+

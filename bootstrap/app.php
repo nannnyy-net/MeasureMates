@@ -22,17 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(SecureHeadersMiddleware::class);
-        
-        // Exclude CSRF validation for JSON API endpoints
-        $middleware->validateCsrfTokens(except: [
-            '/convert',
-            '/notes',
-            '/notes/*',
-            '/favorites',
-            '/favorites/*',
-            '/history',
-            '/history/*',
-        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (ValidationException $e, Request $request) {

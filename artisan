@@ -1,22 +1,18 @@
+#!/usr/bin/env php
 <?php
 
-$projectRoot = __DIR__ . '/MeasureMate';
+use Illuminate\Foundation\Application;
+use Symfony\Component\Console\Input\ArgvInput;
 
-if (!is_dir($projectRoot)) {
-    fwrite(STDERR, "Laravel project directory not found: {$projectRoot}\n");
-    exit(1);
-}
+define('LARAVEL_START', microtime(true));
 
-chdir($projectRoot);
+// Register the Composer autoloader...
+require __DIR__.'/vendor/autoload.php';
 
-$script = $projectRoot . '/artisan';
+// Bootstrap Laravel and handle the command...
+/** @var Application $app */
+$app = require_once __DIR__.'/bootstrap/app.php';
 
-if (!is_file($script)) {
-    fwrite(STDERR, "Laravel entrypoint not found: {$script}\n");
-    exit(1);
-}
+$status = $app->handleCommand(new ArgvInput);
 
-$_SERVER['argv'] = array_merge([realpath($script)], array_slice($_SERVER['argv'], 1));
-$_SERVER['argc'] = count($_SERVER['argv']);
-
-require $script;
+exit($status);
