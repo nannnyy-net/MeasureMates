@@ -1,87 +1,79 @@
 FROM php:8.2-cli
 
-# Install OS dependencies + PHP extensions required by Laravel (and by requirement list)
+# Install system dependencies
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    libzip-dev \
-    libonig-dev \
-    libxml2-dev \
-    pkg-config \
-    unzip \
-  && docker-php-ext-configure zip \
-  && docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    mbstring \
-    bcmath \
-    exif \
-    pcntl \
-    zip \
-    xml \
-  && docker-php-ext-enable pdo_mysql mysqli \
-  && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        unzip \
+        zip \
+        libzip-dev \
+        libonig-dev \
+        libxml2-dev \
+        nodejs \
+        npm \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        mysqli \
+        mbstring \
+        bcmath \
+        exif \
+        pcntl \
+        zip \
+        xml \
+        opcache \
+    && rm -rf /var/lib/apt/lists/*
 
-# Optional but commonly needed for Laravel performance
-RUN docker-php-ext-install opcache \
-  && echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini
-
-# Create non-root user (Railway runs containers as non-root in some templates)
-RUN useradd -m -u 10001 appuser
 WORKDIR /app
 
-# Copy only composer manifests first for better layer caching
-COPY composer.json composer.lock /app/
-
-# Install composer
+# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# IMPORTANT: disable Composer scripts during dependency install.
-# Laravel's post-autoload-dump runs `@php artisan package:discover`, which requires `artisan`
-# to exist. `artisan` isn't present until after the full app is copied.
+# Copy Composer files first
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies without running Laravel scripts yet
 RUN composer install \
     --no-dev \
     --prefer-dist \
+    --optimize-autoloader \
     --no-interaction \
-    --no-scripts \
-    --optimize-autoloader
+    --no-scripts
 
-# Copy application code (includes artisan)
-COPY . /app
+# Copy the application
+COPY . .
 
-# Re-run autoload generation now that artisan exists (allows Laravel package discovery)
+# Generate optimized autoloader
 RUN composer dump-autoload --optimize
 
+# Run Laravel package discovery
+RUN php artisan package:discover --ansi
 
-
-# Install Node.js + npm for Vite asset compilation (Railway Docker build image doesn't include Node)
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends nodejs npm \
-  && rm -rf /var/lib/apt/lists/*
-
-# Build frontend assets (Vite)
-RUN if [ -f package.json ] && [ -f package-lock.json ]; then \
-      npm ci --no-audit --no-fund && npm run build; \
-    else \
-      echo "package.json or package-lock.json missing; skipping frontend build"; \
+# Build frontend assets
+RUN if [ -f package.json ]; then \
+      npm install && npm run build; \
     fi
 
-# Production hardening
-RUN php artisan optimize:clear --no-interaction || true
+# Create required directories
+RUN mkdir -p \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache
 
+# Create storage symlink
+RUN php artisan storage:link || true
 
-# Fix permissions (Railway may mount volumes)
-RUN chown -R appuser:appuser /app/storage /app/bootstrap/cache
-
-USER appuser
+# Set permissions
+RUN chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
 
-# Railway uses PORT env var
 ENV PORT=8080
 
-# Run migrations+cache then start
-CMD ["sh", "-lc", "php artisan storage:link --force && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan optimize:clear --no-interaction && php artisan optimize --no-interaction && php artisan serve --host 0.0.0.0 --port 8080"]
-
-
-
+CMD sh -c "\
+php artisan optimize:clear && \
+php artisan migrate --force && \
+php -S 0.0.0.0:${PORT:-8080} -t public"

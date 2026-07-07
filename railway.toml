@@ -1,19 +1,1 @@
-# Production deployment configuration for a Laravel 12 + Vite app running on Railway
-
-[build]
-# Docker build + runtime will handle PHP extensions.
-# Railway will build the image from the Dockerfile.
-command = "true"
-
-[deploy]
-# Keep deploy command minimal because the container CMD runs migrations+caches.
-# This prevents double-migration issues.
-command = "php artisan migrate --force"
-
-[http]
-port = 8080
-
-[start]
-# Use the container default CMD to run migrations/caches and then serve.
-command = "php artisan serve --host 0.0.0.0 --port $PORT"
 
