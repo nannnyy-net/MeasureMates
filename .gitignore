@@ -47,3 +47,5 @@ nbproject/
 *.swp
 *~
 
+/public/hot
+
