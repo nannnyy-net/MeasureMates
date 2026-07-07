@@ -81,7 +81,6 @@ EXPOSE 8080
 ENV PORT=8080
 
 # Run migrations+cache then start
-CMD ["sh", "-lc", "php artisan storage:link --force && php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan optimize:clear --no-interaction && php artisan optimize --no-interaction && php artisan serve --host 0.0.0.0 --port 8080"]
-
+CMD ["sh", "-lc", "php artisan storage:link --force && php artisan migrate --force && php artisan optimize:clear --no-interaction && php artisan optimize --no-interaction && php -S 0.0.0.0:${PORT:-8080} -t public"]
 
 
