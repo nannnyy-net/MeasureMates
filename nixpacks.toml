@@ -1,0 +1,2 @@
+# Intentionally not used: Docker deployment is the permanent solution to guarantee required PHP extensions.
+

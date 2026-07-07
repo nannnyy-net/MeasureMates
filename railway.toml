@@ -1,20 +1,19 @@
-# Railway deployment configuration for a Laravel + Vite app.
-# Place this at the repository root.
+# Production deployment configuration for a Laravel 12 + Vite app running on Railway
 
 [build]
-# Buildpacks will detect the language stack.
-# We explicitly run production installs and build artifacts.
-command = "composer install --no-dev --optimize-autoloader && npm ci && npm run build"
+# Docker build + runtime will handle PHP extensions.
+# Railway will build the image from the Dockerfile.
+command = "true"
 
 [deploy]
-# Run database migrations on deploy, then link storage for user uploads.
-# Note: migrations require DB variables (DATABASE_URL or separate config).
-command = "php artisan storage:link --force && php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force"
+# Keep deploy command minimal because the container CMD runs migrations+caches.
+# This prevents double-migration issues.
+command = "php artisan migrate --force"
 
 [http]
-port = 8000
+port = 8080
 
 [start]
+# Use the container default CMD to run migrations/caches and then serve.
 command = "php artisan serve --host 0.0.0.0 --port $PORT"
-
 
