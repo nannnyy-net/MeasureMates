@@ -24,6 +24,7 @@ Route::prefix('notes')->name('notes.')->middleware('throttle:60,1')->group(funct
 
 // Favorites
 Route::prefix('favorites')->name('favorites.')->middleware('throttle:60,1')->group(function () {
+    Route::get('/', [FavoriteController::class, 'index'])->name('index');
     Route::post('/', [FavoriteController::class, 'store'])->name('store');
     Route::delete('/{favorite}', [FavoriteController::class, 'destroy'])->name('destroy');
 });

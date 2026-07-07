@@ -2,6 +2,7 @@
 /vendor/
 /node_modules/
 /public/storage
+/public/build/
 
 # Logs
 /storage/logs/
@@ -17,10 +18,7 @@
 /.env
 /.env.*
 
-# Composer / npm lockfiles (optional: keep lockfiles if you want reproducible builds)
-# If you want to commit them, remove these two lines.
-/composer.lock
-package-lock.json
+# Composer / npm lockfiles are committed for reproducible builds
 
 # OS / editor
 .DS_Store

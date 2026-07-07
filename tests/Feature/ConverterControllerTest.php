@@ -65,4 +65,14 @@ class ConverterControllerTest extends TestCase
         $response = $this->postJson('/convert', $payload);
         $response->assertStatus(422);
     }
+
+    public function test_homepage_renders_conversion_output_actions(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertStatus(200)
+            ->assertSee('Copy Result')
+            ->assertSee('Copy Phrase')
+            ->assertSee('Print Result');
+    }
 }

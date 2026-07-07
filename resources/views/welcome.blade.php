@@ -47,7 +47,44 @@
 
 <body class="min-h-screen bg-bg-primary text-text-primary antialiased">
     <div class="mm-container">
-        
+
+        <!-- Print-only layout (hidden until user clicks Print) -->
+        <div id="mmPrintArea" class="hidden">
+            <div class="mm-print-paper">
+                <div class="mm-print-header">
+                    <div class="mm-print-brand">MeasureMate</div>
+                    <div class="mm-print-title">Conversion Output</div>
+                </div>
+
+                <div class="mm-print-grid">
+                    <div class="mm-print-row">
+                        <div class="mm-print-label">Original</div>
+                        <div class="mm-print-value"><span id="mmPrintOriginalValue">—</span> <span id="mmPrintOriginalUnit">—</span></div>
+                    </div>
+
+                    <div class="mm-print-row">
+                        <div class="mm-print-label">Target</div>
+                        <div class="mm-print-value"><span id="mmPrintTargetUnit">—</span></div>
+                    </div>
+
+                    <div class="mm-print-row">
+                        <div class="mm-print-label">Final Calculated Result</div>
+                        <div class="mm-print-value"><span id="mmPrintFinalResult">—</span></div>
+                    </div>
+
+                    <div class="mm-print-row">
+                        <div class="mm-print-label">Ingredient</div>
+                        <div class="mm-print-value"><span id="mmPrintIngredient">—</span></div>
+                    </div>
+
+                    <div class="mm-print-row">
+                        <div class="mm-print-label">Date/Time of Calculation</div>
+                        <div class="mm-print-value"><span id="mmPrintCalculatedAt">—</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Header Section -->
         <header class="flex flex-col md:flex-row justify-between items-center gap-4 py-6 border-b border-border mb-8">
             <div class="flex items-center gap-3">
@@ -92,11 +129,11 @@
                         </div>
 
                         <!-- Units Grid -->
-                        <div class="grid grid-cols-9 items-end gap-2">
+                        <div class="flex flex-col gap-3 md:grid md:grid-cols-9 md:items-end md:gap-2">
                             <!-- From Unit -->
-                            <div class="col-span-4">
+                            <div class="w-full md:col-span-4">
                                 <label for="fromUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">From</label>
-                                <select id="fromUnit" class="mm-input font-medium py-3">
+                                <select id="fromUnit" class="mm-input font-medium py-3 w-full">
                                     @foreach($units as $key => $unit)
                                         <option value="{{ $key }}" {{ $key == 'cup' ? 'selected' : '' }}>{{ $unit['name'] }} ({{ $unit['symbol'] }})</option>
                                     @endforeach
@@ -104,7 +141,7 @@
                             </div>
                             
                             <!-- Swap Button -->
-                            <div class="col-span-1 flex justify-center pb-1">
+                            <div class="flex justify-center md:col-span-1 md:pb-1">
                                 <button type="button" onclick="swapUnits();" class="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center hover:border-accent-primary hover:text-accent-primary transition-all duration-200" title="Swap Units">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -113,9 +150,9 @@
                             </div>
                             
                             <!-- To Unit -->
-                            <div class="col-span-4">
+                            <div class="w-full md:col-span-4">
                                 <label for="toUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">To</label>
-                                <select id="toUnit" class="mm-input font-medium py-3">
+                                <select id="toUnit" class="mm-input font-medium py-3 w-full">
                                     @foreach($units as $key => $unit)
                                         <option value="{{ $key }}" {{ $key == 'tbsp' ? 'selected' : '' }}>{{ $unit['name'] }} ({{ $unit['symbol'] }})</option>
                                     @endforeach
@@ -124,7 +161,7 @@
                         </div>
 
                         <!-- Buttons Group -->
-                        <div class="grid grid-cols-2 gap-3 mt-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                             <button type="submit" class="mm-btn mm-btn--primary py-3 flex items-center justify-center font-bold">
                                 Convert
                             </button>
@@ -141,9 +178,14 @@
                         <span class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Conversion Output</span>
                         
                         <!-- Toggle Favorite Button -->
-                        <button id="favoriteBtn" onclick="toggleCurrentFavorite();" class="text-text-muted hover:text-yellow-400 transition-all duration-200" title="Add to Favorites">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        <button
+                            id="favoriteBtn"
+                            onclick="toggleCurrentFavorite();"
+                            class="text-text-muted hover:text-yellow-400 transition-all duration-200"
+                            title="Add to Favorites"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                         </button>
                     </div>
@@ -158,13 +200,19 @@
                     <div class="flex items-center gap-3 pt-3 border-t border-border/40">
                         <button type="button" onclick="copyResult();" class="mm-btn mm-btn--secondary text-xs px-3 py-2 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v10a2 2 0 002 2h8a2 2 0 002-2V7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16" />
                             </svg>
                             Copy Result
                         </button>
+
                         <button type="button" onclick="copyPhrase();" class="mm-btn mm-btn--secondary text-xs px-3 py-2 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h8" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8h4" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" />
                             </svg>
                             Copy Phrase
                         </button>
@@ -262,21 +310,11 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
                                 Clear Note
                             </button>
-
-                            <button type="button" onclick="notesTogglePin()" class="mm-tool-btn" id="pinNoteBtn" title="Pin Note">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 9l-2 2 6 6 2-2-6-6Z"/><path d="M16 3l5 5-6 6-5-5 6-6Z"/></svg>
-                                Pin Note
-                            </button>
-
-                            <button type="button" onclick="notesToggleFavorite()" class="mm-tool-btn" id="favoriteNoteBtn" title="Favorite Note">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.3 5.6 21l1.8-7.1L2 9.2l7.2-.6L12 2l2.8 6.6 7.2.6-5.4 4.7L18.4 21 12 17.3Z"/></svg>
-                                Favorite Note
-                            </button>
                         </div>
 
                         <div class="mm-notepad-writing">
                             <input type="hidden" id="noteId" value="">
-                            <input type="hidden" id="notePinned" value="0">
+
                             <input type="hidden" id="noteFavorite" value="0">
 
                             <textarea id="noteBody" class="mm-notepad-textarea" placeholder="Write your ingredient notes, cooking tips, recipe ideas, or kitchen reminders here..." oninput="notesOnBodyInput()"></textarea>
@@ -293,14 +331,27 @@
                     <!-- Notes List -->
                     <div id="notesListContainer" class="flex flex-col gap-3 max-h-[360px] overflow-y-auto pr-1">
                         @forelse($notes as $note)
-                            <div class="bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-start gap-4 transition-all duration-200" id="note-card-{{ $note->id }}">
+                            <div onclick="notesLoadNoteToEditor({{ $note->id }});" style="cursor:pointer;" class="bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-start gap-4 transition-all duration-200" id="note-card-{{ $note->id }}" data-note-id="{{ $note->id }}" data-favorite="{{ (int) $note->is_favorite }}">
+                                <div class="mr-3 shrink-0 flex items-start">
+                                    <button onclick="event.stopPropagation(); toggleNoteFavorite({{ $note->id }});" aria-label="Toggle favorite" title="Toggle favorite" class="p-1">
+                                        @if($note->is_favorite)
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                            </svg>
+                                        @endif
+                                    </button>
+                                </div>
                                 <div class="flex-1">
                                     <h4 class="font-bold text-white text-sm" id="note-name-val-{{ $note->id }}">{{ $note->ingredient_name }}</h4>
                                     <p class="text-xs text-text-secondary mt-1" id="note-text-val-{{ $note->id }}">{{ $note->notes }}</p>
                                 </div>
                                 @php $noteHasContent = trim((string)($note->notes ?? '')) !== '' @endphp
                                 <div class="flex gap-1 shrink-0">
-                                    <button onclick="notesLoadNoteToEditor({{ $note->id }});" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit" aria-label="Edit">
+                                                    <button onclick="event.stopPropagation(); notesLoadNoteToEditor({{ $note->id }});" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit" aria-label="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                         </svg>
@@ -308,7 +359,7 @@
 
                                     <button
                                         type="button"
-                                        onclick="printIngredientNote({{ $note->id }});"
+                                        onclick="event.stopPropagation(); printIngredientNote({{ $note->id }});"
                                         class="p-1 text-text-muted hover:text-accent-primary transition-colors"
                                         title="Print Note"
                                         aria-label="Print"
@@ -321,7 +372,7 @@
                                         </svg>
                                     </button>
 
-                                    <button onclick="notesDelete({{ $note->id }});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete" aria-label="Delete">
+                                    <button onclick="event.stopPropagation(); notesDelete({{ $note->id }});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete" aria-label="Delete">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
@@ -458,7 +509,18 @@
 
     <!-- AJAX & DOM Logic Scripts -->
     <script>
-        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+        const IS_AUTHENTICATED = @json(Auth::check());
+
+        function number_format(number, decimals = 0, decPoint = '.', thousandsSep = '') {
+            const value = Number(number ?? 0);
+            if (!Number.isFinite(value)) {
+                return '0';
+            }
+
+            const fixed = value.toFixed(decimals);
+            return fixed.replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.0+$/, '');
+        }
 
         // Global states
         let lastResult = '';
@@ -527,8 +589,8 @@
                 star.classList.add('text-text-muted');
                 star.setAttribute('title', 'Add to Favorites');
                 star.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                 `;
             }
@@ -615,15 +677,26 @@
         }
 
         function printConversion() {
-            if (!lastResult || !lastPhrase) {
+            const resultValueEl = document.getElementById('resultValue');
+            const phraseValueEl = document.getElementById('phraseValue');
+            const amountEl = document.getElementById('amount');
+            const fromUnitEl = document.getElementById('fromUnit');
+            const toUnitEl = document.getElementById('toUnit');
+
+            const currentResult = (resultValueEl?.innerText || '').trim();
+            const currentPhrase = (phraseValueEl?.innerText || '').trim();
+
+            // Prevent printing empty/placeholder output
+            if (!currentResult || currentResult === '--' || !currentPhrase || currentPhrase.includes('Select units')) {
                 showNotification('Please run a conversion before printing.');
                 return;
             }
 
+
             const now = new Date();
             const printedOn = now.toLocaleString(undefined, { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 
-            const title = 'MeasureMate - Conversion';
+            const ingredient = (window.__lastIngredientName || '').trim() || '—';
 
             // Escape for safe HTML injection
             const esc = (str) => String(str ?? '')
@@ -633,84 +706,37 @@
                 .replaceAll('"', '&quot;')
                 .replaceAll("'", '&#039;');
 
-            const html = `<!doctype html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>${esc(title)}</title>
-<style>
-    @media print {
-        body { background:#fff !important; color:#000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
-    body{ font-family: Arial, Helvetica, sans-serif; color:#000; background:#fff; margin:0; }
-    .mm-print-page{ padding: 20mm; }
-    .mm-brand{ font-size:16px; font-weight:800; margin:0 0 4px; }
-    .mm-section{ font-size:14px; font-weight:700; margin:0 0 10px; }
-    .mm-box{ border:1px solid #000; padding: 12px 14px; margin-top: 10px; }
-    .mm-result{ font-size: 22px; font-weight: 800; margin-top: 8px; }
-    .mm-phrase{ font-size: 14px; font-weight: 600; margin-top: 6px; white-space: pre-wrap; }
-    .mm-meta{ border-top:1px solid #000; padding-top: 10px; margin-top: 18px; font-size: 11.5px; }
-</style>
-</head>
-<body>
-    <div class="mm-print-page">
-        <div>
-            <div class="mm-brand">MeasureMate</div>
-            <div class="mm-section">Conversion Output</div>
-        </div>
+            const originalValue = (amountEl?.value || '').trim();
+            const originalUnit = (fromUnitEl?.value || '').trim();
+            const targetUnit = (toUnitEl?.value || '').trim();
 
-        <div class="mm-box">
-            <div class="mm-label" style="font-weight:700; font-size:12px;">Result</div>
-            <div class="mm-result">${esc(lastResult)}</div>
-
-            <div class="mm-phrase">${esc(lastPhrase)}</div>
-        </div>
-
-        <div class="mm-meta">
-            <div>Generated by MeasureMate</div>
-            <div>Printed on: ${esc(printedOn)}</div>
-        </div>
-    </div>
-</body>
-</html>`;
-
-            const printWin = window.open('', '_blank', 'noopener,noreferrer');
-            if (!printWin) {
-                alert('Popup blocked. Please allow popups to print.');
+            // Populate dedicated same-page print layout
+            const printArea = document.getElementById('mmPrintArea');
+            if (!printArea) {
+                alert('Print layout missing.');
                 return;
             }
 
-            printWin.document.open();
-            printWin.document.write(html);
-            printWin.document.close();
+            printArea.querySelector('#mmPrintOriginalValue').innerHTML = esc(originalValue || '—');
+            printArea.querySelector('#mmPrintOriginalUnit').innerHTML = esc(originalUnit || '—');
+            printArea.querySelector('#mmPrintTargetUnit').innerHTML = esc(targetUnit || '—');
+            printArea.querySelector('#mmPrintFinalResult').innerHTML = esc(currentResult || '—');
+            printArea.querySelector('#mmPrintIngredient').innerHTML = esc(ingredient);
+            printArea.querySelector('#mmPrintCalculatedAt').innerHTML = esc(printedOn);
 
-            const doPrint = () => {
-                try {
-                    printWin.focus();
-                    printWin.print();
-                } catch {}
+            // Print from same page so CSS @media print works.
+            document.body.classList.add('mm-printing-active');
+            printArea.classList.remove('hidden');
+
+            const cleanup = () => {
+                printArea.classList.add('hidden');
+                document.body.classList.remove('mm-printing-active');
             };
 
-            // Retry briefly for kiosks / printer dialog reliability
-            const start = Date.now();
-            const maxWaitMs = 1000;
+            window.onafterprint = cleanup;
+            window.print();
 
-            const tryPrint = () => {
-                try {
-                    const rs = printWin.document && printWin.document.readyState;
-                    if (rs && rs !== 'complete') {
-                        if (Date.now() - start < maxWaitMs) requestAnimationFrame(tryPrint);
-                        return;
-                    }
-                    doPrint();
-                } catch {
-                    // ignore
-                }
-            };
-
-            tryPrint();
-            setTimeout(() => tryPrint(), 200);
+            setTimeout(cleanup, 1000);
         }
 
         function showNotification(msg) {
@@ -724,12 +750,12 @@
             }, 2000);
         }
 
-        // Load a favorite conversion
-        function loadFavorite(amount, fromUnit, toUnit) {
+        // Load a favorite conversion and re-sync the active star state from the server
+        async function loadFavorite(amount, fromUnit, toUnit) {
             document.getElementById('amount').value = amount;
             document.getElementById('fromUnit').value = fromUnit;
             document.getElementById('toUnit').value = toUnit;
-            convertVolume();
+            await convertVolume();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -741,7 +767,8 @@
 
             if (!amount) return;
 
-            const payload = { amount, from_unit: fromUnit, to_unit: toUnit };
+            const amount6 = number_format((parseFloat(amount) || 0), 6, '.', '');
+            const payload = { amount: amount6, from_unit: fromUnit, to_unit: toUnit, ingredient: null };
 
             try {
                 const response = await fetch('/favorites', {
@@ -759,11 +786,11 @@
 
                 if (data.status === 'added') {
                     updateFavoriteStar(true);
-                    insertFavoriteDOM(data.favorite);
+                    await refreshFavoritesList();
                     showNotification('Added to Favorites!');
                 } else {
                     updateFavoriteStar(false);
-                    removeFavoriteDOMByParams(amount, fromUnit, toUnit);
+                    await refreshFavoritesList();
                     showNotification('Removed from Favorites.');
                 }
             } catch (err) {
@@ -771,16 +798,8 @@
             }
         }
 
-        // Favorite DOM manipulation
-        function insertFavoriteDOM(favorite) {
-            const container = document.getElementById('favoritesListContainer');
-            const noMsg = document.getElementById('noFavoritesMessage');
-            if (noMsg) noMsg.remove();
-
-            const card = document.createElement('div');
-            card.className = 'bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-center gap-4 transition-all duration-200';
-            card.id = `favorite-card-${favorite.id}`;
-            card.innerHTML = `
+        function buildFavoriteCardMarkup(favorite) {
+            return `
                 <div class="flex-1 cursor-pointer" onclick="loadFavorite(${favorite.amount}, '${escapeHtml(favorite.from_unit)}', '${escapeHtml(favorite.to_unit)}');">
                     <h4 class="font-bold text-white text-sm">
                         ${escapeHtml(favorite.amount)} ${escapeHtml(favorite.from_unit)} &rarr; ${escapeHtml(favorite.to_unit)}
@@ -795,7 +814,54 @@
                     </button>
                 </div>
             `;
+        }
+
+        function insertFavoriteDOM(favorite) {
+            const container = document.getElementById('favoritesListContainer');
+            const noMsg = document.getElementById('noFavoritesMessage');
+            if (noMsg) noMsg.remove();
+
+            const card = document.createElement('div');
+            card.className = 'bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-center gap-4 transition-all duration-200';
+            card.id = `favorite-card-${favorite.id}`;
+            card.innerHTML = buildFavoriteCardMarkup(favorite);
             container.prepend(card);
+        }
+
+        async function refreshFavoritesList() {
+            try {
+                const response = await fetch('/favorites', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    }
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.success) throw new Error(data.message || 'Unable to load favorites');
+
+                const container = document.getElementById('favoritesListContainer');
+                if (!container) return;
+
+                container.innerHTML = '';
+                const favorites = Array.isArray(data.favorites) ? data.favorites : [];
+
+                if (favorites.length === 0) {
+                    container.innerHTML = '<div id="noFavoritesMessage" class="text-xs text-text-muted py-6 text-center">No favorites saved yet. Perform a conversion and click the star to save one.</div>';
+                    return;
+                }
+
+                favorites.forEach((favorite) => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-center gap-4 transition-all duration-200';
+                    card.id = `favorite-card-${favorite.id}`;
+                    card.innerHTML = buildFavoriteCardMarkup(favorite);
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.warn(err);
+            }
         }
 
         async function deleteFavorite(id) {
@@ -806,14 +872,7 @@
                 });
                 if (!response.ok) throw new Error();
 
-                const card = document.getElementById(`favorite-card-${id}`);
-                if (card) {
-                    card.classList.add('fade-out');
-                    setTimeout(() => {
-                        card.remove();
-                        checkFavoritesEmpty();
-                    }, 300);
-                }
+                await refreshFavoritesList();
 
                 // If currently loaded values match deleted favorite, clear active star
                 const amount = document.getElementById('amount').value;
@@ -860,10 +919,19 @@
                 id: document.getElementById('noteId')?.value || '',
                 title: document.getElementById('noteTitle')?.value || '',
                 category: document.getElementById('noteCategory')?.value || 'Cooking',
-                pinned: (document.getElementById('notePinned')?.value || '0') === '1',
                 favorite: (document.getElementById('noteFavorite')?.value || '0') === '1',
                 body: document.getElementById('noteBody')?.value || ''
             };
+        }
+
+        function updateNoteFavoriteButton() {
+            const btn = document.getElementById('favoriteNoteBtn');
+            if (!btn) return;
+            const active = (document.getElementById('noteFavorite')?.value || '0') === '1';
+            btn.classList.toggle('text-accent-primary', active);
+            btn.classList.toggle('text-text-muted', !active);
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            btn.setAttribute('title', active ? 'Remove favorite note' : 'Favorite note');
         }
 
         function notesUpdateCharCount() {
@@ -956,35 +1024,86 @@
 </body>
 </html>`;
 
-            const printWin = window.open('', '_blank', 'noopener,noreferrer');
-            if (!printWin) {
-                alert('Popup blocked. Please allow popups to print.');
-                return;
-            }
+            const printUsingPopup = () => {
+                const printWin = window.open('', '_blank', 'noopener,noreferrer');
+                if (!printWin) return false;
 
-            printWin.document.open();
-            printWin.document.write(html);
-            printWin.document.close();
-
-            // Trigger print after the new document is fully parsed.
-            const doPrint = () => {
                 try {
-                    printWin.focus();
-                    printWin.print();
-                } catch {
-                    // ignore
+                    printWin.document.open();
+                    printWin.document.write(html);
+                    printWin.document.close();
+
+                    const doPrint = () => {
+                        try {
+                            printWin.focus();
+                            printWin.print();
+                        } catch {
+                            // ignore
+                        }
+                    };
+
+                    // Delay slightly to allow fonts/resources to render
+                    setTimeout(doPrint, 250);
+                    return true;
+                } catch (e) {
+                    try { printWin.close(); } catch {}
+                    return false;
                 }
             };
 
-            // Some browsers need a tiny delay even after document.close().
-            setTimeout(doPrint, 150);
+            const printUsingIframe = () => {
+                try {
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'fixed';
+                    iframe.style.right = '0';
+                    iframe.style.bottom = '0';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = '0';
+                    iframe.setAttribute('aria-hidden', 'true');
+                    document.body.appendChild(iframe);
+
+                    const idoc = iframe.contentDocument || iframe.contentWindow.document;
+                    idoc.open();
+                    idoc.write(html);
+                    idoc.close();
+
+                    const tryPrint = () => {
+                        try {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+                        } catch (e) {
+                            // ignore
+                        } finally {
+                            setTimeout(() => { try { iframe.remove(); } catch {} }, 400);
+                        }
+                    };
+
+                    // Some browsers require a slight delay to render the content.
+                    iframe.onload = () => setTimeout(tryPrint, 150);
+                    // Fallback: attempt print after a timeout even if onload doesn't fire.
+                    setTimeout(tryPrint, 400);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            };
+
+            // Try popup first; if blocked, fallback to iframe printing
+            const usedPopup = printUsingPopup();
+            if (!usedPopup) {
+                const usedIframe = printUsingIframe();
+                if (!usedIframe) {
+                    alert('Unable to open print window. Please allow popups or try printing from your browser menu.');
+                }
+            }
         }
 
 
 
 
         function notesLocalKey() {
-            const userKey = '{{ auth()->check() ? auth()->id() : "guest" }}';
+            const userKey = @json(Auth::check() ? Auth::id() : 'guest');
             return `mm_ingredient_notes_draft_${userKey}`;
         }
 
@@ -994,12 +1113,12 @@
                 noteId: st.id,
                 title: st.title,
                 category: st.category,
-                pinned: st.pinned,
+
                 favorite: st.favorite,
                 body: st.body,
                 updatedAt: Date.now()
             }));
-            localStorage.setItem('mm_ingredient_notes_pinned', JSON.stringify(window.__notesPinned || {}));
+
             localStorage.setItem('mm_ingredient_notes_favorite', JSON.stringify(window.__notesFavorite || {}));
         }
 
@@ -1022,14 +1141,12 @@
                 const noteIdEl = document.getElementById('noteId');
                 const titleEl = document.getElementById('noteTitle');
                 const catEl = document.getElementById('noteCategory');
-                const pinnedEl = document.getElementById('notePinned');
                 const favEl = document.getElementById('noteFavorite');
                 const bodyEl = document.getElementById('noteBody');
 
                 if (noteIdEl) noteIdEl.value = noteIdIsStillPresent ? (draft.noteId || '') : '';
                 if (titleEl) titleEl.value = draft.title || '';
                 if (catEl) catEl.value = draft.category || 'Cooking';
-                if (pinnedEl) pinnedEl.value = noteIdIsStillPresent && draft.pinned ? '1' : '0';
                 if (favEl) favEl.value = noteIdIsStillPresent && draft.favorite ? '1' : '0';
                 if (bodyEl) bodyEl.value = draft.body || '';
 
@@ -1065,7 +1182,8 @@
 
             const payload = {
                 ingredient_name: trimmedTitle || '(Untitled)',
-                notes: trimmedBody
+                notes: trimmedBody,
+                is_favorite: st.favorite
             };
 
             const url = st.id ? `/notes/${st.id}` : '/notes';
@@ -1094,11 +1212,72 @@
 
                     const card = document.getElementById(`note-card-${st.id}`);
                     if (card) {
-                        // keep pinned ordering purely client-side
+                        card.setAttribute('data-favorite', data.note.is_favorite ? '1' : '0');
+                    }
+                    // Ensure print button exists and is enabled/disabled based on content
+                    try {
+                        const card = document.getElementById(`note-card-${st.id}`);
+                        if (card) {
+                            const printBtn = card.querySelector('button[aria-label="Print"]');
+                            const hasContent = String(data.note.notes || '').trim().length > 0;
+                            if (printBtn) {
+                                if (hasContent) printBtn.removeAttribute('disabled'); else printBtn.setAttribute('disabled', '');
+                            } else if (hasContent) {
+                                // create print button and insert before delete button
+                                const btn = document.createElement('button');
+                                btn.type = 'button';
+                                btn.className = 'p-1 text-text-muted hover:text-accent-primary transition-colors';
+                                btn.setAttribute('title', 'Print Note');
+                                btn.setAttribute('aria-label', 'Print');
+                                btn.setAttribute('onclick', `printIngredientNote(${data.note.id});`);
+                                btn.innerHTML = `\n                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7" />\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14h12v8H6v-8z" />\n                                    </svg>`;
+                                // insert before the delete button (last child)
+                                const actions = card.querySelector('.flex.gap-1.shrink-0');
+                                if (actions) {
+                                    // insert as the second element (after edit)
+                                    actions.insertBefore(btn, actions.children[1] || null);
+                                }
+                            }
+                            // Update favorite star in the card if present
+                            try {
+                                const starBtn = card.querySelector('button[aria-label="Toggle favorite"]');
+                                if (starBtn) {
+                                    const fav = !!data.note.is_favorite;
+                                    starBtn.innerHTML = fav ? `\n                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">\n                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />\n                                        </svg>` : `\n                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />\n                                        </svg>`;
+                                }
+                            } catch (e) {}
+                        }
+                    } catch (e) {
+                        // ignore DOM update errors
                     }
                 } else {
                     insertNoteDOM(data.note);
                     document.getElementById('noteId').value = data.note.id;
+
+                    // Ensure the newly inserted card has a print button and is visible without requiring refresh
+                    try {
+                        const card = document.getElementById(`note-card-${data.note.id}`);
+                        if (card) {
+                            card.classList.add('note-card-visible');
+                            const hasContent = String(data.note.notes || '').trim().length > 0;
+                            let printBtn = card.querySelector('button[aria-label="Print"]');
+                            if (!printBtn && hasContent) {
+                                const btn = document.createElement('button');
+                                btn.type = 'button';
+                                btn.className = 'p-1 text-text-muted hover:text-accent-primary transition-colors';
+                                btn.setAttribute('title', 'Print Note');
+                                btn.setAttribute('aria-label', 'Print');
+                                btn.setAttribute('onclick', `printIngredientNote(${data.note.id});`);
+                                btn.innerHTML = `\n                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7" />\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />\n                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14h12v8H6v-8z" />\n                                    </svg>`;
+                                const actions = card.querySelector('.flex.gap-1.shrink-0');
+                                if (actions) actions.insertBefore(btn, actions.children[1] || null);
+                            } else if (printBtn) {
+                                if (hasContent) printBtn.removeAttribute('disabled'); else printBtn.setAttribute('disabled', '');
+                            }
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
                 }
 
                 notesPersistDraft();
@@ -1112,22 +1291,32 @@
             const noteIdEl = document.getElementById('noteId');
             const titleEl = document.getElementById('noteTitle');
             const categoryEl = document.getElementById('noteCategory');
-            const pinnedEl = document.getElementById('notePinned');
             const favoriteEl = document.getElementById('noteFavorite');
             const bodyEl = document.getElementById('noteBody');
             if (noteIdEl) noteIdEl.value = '';
             if (titleEl) titleEl.value = '';
             if (categoryEl) categoryEl.value = 'Cooking';
-            if (pinnedEl) pinnedEl.value = '0';
             if (favoriteEl) favoriteEl.value = '0';
             if (bodyEl) bodyEl.value = '';
             notesUpdateCharCount();
+            updateNoteFavoriteButton();
             notesPersistDraft();
             showNotification('New note started.');
         }
 
         function notesEdit() {
-            // Load the first visible note card into the editor
+            // If the editor already references a saved note, reload that note into the editor
+            const noteIdEl = document.getElementById('noteId');
+            const currentId = noteIdEl?.value || '';
+            if (currentId) {
+                const card = document.getElementById(`note-card-${currentId}`);
+                if (card) {
+                    notesLoadNoteToEditor(currentId);
+                    return;
+                }
+            }
+
+            // Otherwise load the first visible note card into the editor
             const first = document.querySelector('#notesListContainer .note-card-visible');
             if (!first) return;
             const id = first.getAttribute('data-note-id');
@@ -1144,11 +1333,28 @@
             document.getElementById('noteTitle').value = title;
             document.getElementById('noteBody').value = body;
             document.getElementById('noteCategory').value = 'Cooking';
-            document.getElementById('notePinned').value = (window.__notesPinned || {})[id] ? '1' : '0';
-            document.getElementById('noteFavorite').value = (window.__notesFavorite || {})[id] ? '1' : '0';
+            document.getElementById('noteFavorite').value = (document.getElementById(`note-card-${id}`)?.getAttribute('data-favorite') === '1' || (window.__notesFavorite || {})[id]) ? '1' : '0';
 
+            updateNoteFavoriteButton();
             notesUpdateCharCount();
             notesPersistDraft();
+            // Focus editor so user can immediately edit
+            try {
+                const bodyEl = document.getElementById('noteBody');
+                if (bodyEl) {
+                    bodyEl.focus();
+                    // move caret to end
+                    const len = bodyEl.value.length;
+                    if (typeof bodyEl.selectionStart === 'number') {
+                        bodyEl.selectionStart = bodyEl.selectionEnd = len;
+                    }
+                }
+                // scroll editor into view
+                const shell = document.querySelector('.mm-notepad-shell');
+                if (shell) shell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (e) {
+                // ignore
+            }
         }
 
         async function notesDelete(noteId = null) {
@@ -1207,47 +1413,57 @@
             notesNew();
         }
 
-        function notesTogglePin() {
-            const st = notesGetEditorState();
-            if (!st.id) {
-                showNotification('Save the note first to pin it.');
-                return;
+
+
+        // Toggle favorite state for a given note id via AJAX
+        async function toggleNoteFavorite(noteId) {
+            const card = document.getElementById(`note-card-${noteId}`);
+            const current = card ? (card.getAttribute('data-favorite') === '1') : false;
+            const newVal = !current;
+            const titleEl = document.getElementById(`note-name-val-${noteId}`);
+            const bodyEl = document.getElementById(`note-text-val-${noteId}`);
+            const payload = {
+                ingredient_name: titleEl?.innerText.trim() || '',
+                notes: bodyEl?.innerText.trim() || '',
+                is_favorite: newVal ? 1 : 0,
+            };
+
+            try {
+                const response = await fetch(`/notes/${noteId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || 'Unable to toggle favorite');
+
+                if (card) {
+                    card.setAttribute('data-favorite', data.note?.is_favorite ? '1' : '0');
+                    const starBtn = card.querySelector('button[aria-label="Toggle favorite"]');
+                    if (starBtn) {
+                        starBtn.innerHTML = data.note?.is_favorite ? `\n                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">\n                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />\n                            </svg>` : `\n                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">\n                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />\n                            </svg>`;
+                    }
+                }
+
+                const noteIdEl = document.getElementById('noteId');
+                if (noteIdEl && String(noteIdEl.value) === String(noteId)) {
+                    document.getElementById('noteFavorite').value = data.note?.is_favorite ? '1' : '0';
+                    updateNoteFavoriteButton();
+                }
+
+                window.__notesFavorite = window.__notesFavorite || {};
+                window.__notesFavorite[noteId] = !!data.note?.is_favorite;
+                localStorage.setItem('mm_ingredient_notes_favorite', JSON.stringify(window.__notesFavorite || {}));
+
+                showNotification(data.note?.is_favorite ? 'Marked favorite' : 'Unmarked favorite');
+            } catch (e) {
+                showNotification(e.message || 'Error toggling favorite');
             }
-            window.__notesPinned = window.__notesPinned || {};
-            const cur = !!window.__notesPinned[st.id];
-            window.__notesPinned[st.id] = !cur;
-            document.getElementById('notePinned').value = !cur ? '1' : '0';
-            notesReorderPinned();
-            notesPersistDraft();
-        }
-
-        function notesToggleFavorite() {
-            const st = notesGetEditorState();
-            if (!st.id) {
-                showNotification('Save the note first to favorite it.');
-                return;
-            }
-            window.__notesFavorite = window.__notesFavorite || {};
-            const cur = !!window.__notesFavorite[st.id];
-            window.__notesFavorite[st.id] = !cur;
-            document.getElementById('noteFavorite').value = !cur ? '1' : '0';
-            notesPersistDraft();
-        }
-
-        function notesReorderPinned() {
-            const container = document.getElementById('notesListContainer');
-            if (!container) return;
-            const cards = Array.from(container.querySelectorAll('div[id^="note-card-"]'));
-            const pinned = [];
-            const rest = [];
-
-            cards.forEach(c => {
-                const id = c.getAttribute('id').replace('note-card-', '');
-                if (window.__notesPinned && window.__notesPinned[id]) pinned.push(c); else rest.push(c);
-            });
-
-            container.innerHTML = '';
-            [...pinned, ...rest].forEach(c => container.appendChild(c));
         }
 
         function insertNoteDOM(note) {
@@ -1259,18 +1475,40 @@
             card.className = 'bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-start gap-4 transition-all duration-200';
             card.id = `note-card-${note.id}`;
             card.setAttribute('data-note-id', String(note.id));
+            card.style.cursor = 'pointer';
+            card.onclick = function() { notesLoadNoteToEditor(note.id); };
+            const printDisabled = (String(note.notes || '').trim().length === 0) ? 'disabled' : '';
             card.innerHTML = `
+                <div class="mr-3 shrink-0 flex items-start">
+                    <button onclick="event.stopPropagation(); toggleNoteFavorite(${note.id});" aria-label="Toggle favorite" title="Toggle favorite" class="p-1" id="note-star-${note.id}">
+                        ${String(note.is_favorite ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>` : `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>`)}
+                    </button>
+                </div>
                 <div class="flex-1">
                     <h4 class="font-bold text-white text-sm" id="note-name-val-${note.id}">${escapeHtml(note.ingredient_name)}</h4>
                     <p class="text-xs text-text-secondary mt-1 whitespace-pre-wrap" id="note-text-val-${note.id}">${escapeHtml(note.notes)}</p>
                 </div>
                 <div class="flex gap-1 shrink-0">
-                    <button onclick="notesLoadNoteToEditor(${note.id})" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit">
+                    <button onclick="event.stopPropagation(); notesLoadNoteToEditor(${note.id})" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                     </button>
-                    <button onclick="notesDelete(${note.id});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete">
+                    <button
+                        type="button"
+                        onclick="event.stopPropagation(); printIngredientNote(${note.id});"
+                        class="p-1 text-text-muted hover:text-accent-primary transition-colors"
+                        title="Print Note"
+                        aria-label="Print"
+                        ${printDisabled}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14h12v8H6v-8z" />
+                        </svg>
+                    </button>
+                    <button onclick="event.stopPropagation(); notesDelete(${note.id});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
@@ -1279,8 +1517,8 @@
             `;
 
             container.prepend(card);
-            notesReorderPinned();
         }
+
 
         function checkNotesEmpty() {
             const container = document.getElementById('notesListContainer');
@@ -1335,20 +1573,16 @@
 
         // Initialize editor state on load
         (function initIngredientNotesNotepad() {
-            window.__notesPinned = {};
             window.__notesFavorite = {};
 
             // restore draft to textarea + title
             notesRestoreDraft();
             notesUpdateCharCount();
+            updateNoteFavoriteButton();
 
-            // Ensure pinned ordering based on local maps stored in draft
-            const rawPinned = localStorage.getItem('mm_ingredient_notes_pinned');
             const rawFav = localStorage.getItem('mm_ingredient_notes_favorite');
-            if (rawPinned) { try { window.__notesPinned = JSON.parse(rawPinned) || {}; } catch {} }
             if (rawFav) { try { window.__notesFavorite = JSON.parse(rawFav) || {}; } catch {} }
 
-            notesReorderPinned();
             filterNotes();
             notesInstallShortcuts();
 

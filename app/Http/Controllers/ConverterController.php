@@ -6,6 +6,7 @@ use App\Services\ConversionService;
 use App\Models\ConversionHistory;
 use App\Models\Favorite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class ConverterController extends Controller
@@ -64,11 +65,14 @@ class ConverterController extends Controller
             );
 
 
-            $isFavorite = Favorite::query()
-                ->where('from_unit', $fromUnit)
-                ->where('to_unit', $toUnit)
-                ->where('amount', $amount)
-                ->exists();
+            $isFavorite = false;
+            if (Auth::check()) {
+                $favoriteKey = Favorite::buildFavoriteKey(Auth::id(), $fromUnit, $toUnit, $amount, $ingredient);
+                $isFavorite = Favorite::query()
+                    ->where('user_id', Auth::id())
+                    ->where('favorite_key', $favoriteKey)
+                    ->exists();
+            }
 
             return response()->json([
                 'success' => true,

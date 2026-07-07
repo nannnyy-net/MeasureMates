@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\ConversionService;
-use App\Models\IngredientNote;
 use App\Models\ConversionHistory;
 use App\Models\Favorite;
+use App\Models\IngredientNote;
+use App\Services\ConversionService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class DashboardController extends Controller
 {
     protected ConversionService $conversionService;
@@ -15,11 +18,16 @@ class DashboardController extends Controller
         $this->conversionService = $conversionService;
     }
 
-    public function index(\Illuminate\Http\Request $request)
+    public function index(Request $request)
     {
         $units = $this->conversionService->getUnits();
-        $notes = IngredientNote::query()->orderBy('ingredient_name', 'asc')->get();
-        $favorites = Favorite::query()->orderBy('created_at', 'desc')->get();
+        $notes = IngredientNote::query()->orderByDesc('is_favorite')->orderBy('ingredient_name', 'asc')->get();
+
+        if (Auth::check()) {
+            $favorites = Favorite::query()->where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+        } else {
+            $favorites = collect();
+        }
 
         $historyQuery = ConversionHistory::query();
         $search = trim((string) $request->input('history_search', ''));

@@ -97,6 +97,13 @@ class ConversionServiceTest extends TestCase
     /**
      * Test friendly rounding and formatting.
      */
+    public function test_units_are_returned_in_custom_volume_order(): void
+    {
+        $units = $this->service->getUnits();
+
+        $this->assertSame(['ml', 'tsp', 'tbsp', 'floz', 'cup', 'pint', 'quart', 'liter', 'gallon'], array_keys($units));
+    }
+
     public function test_amount_formatting(): void
     {
         $this->assertEquals('1.2345', $this->service->formatAmount(1.2345432));

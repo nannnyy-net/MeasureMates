@@ -6,9 +6,11 @@ class ConversionService
 {
     protected array $units;
 
+    protected array $displayOrder = ['ml', 'tsp', 'tbsp', 'floz', 'cup', 'pint', 'quart', 'liter', 'gallon'];
+
     public function __construct()
     {
-        $this->units = config('conversions.volume_units', []);
+        $this->units = $this->orderUnits(config('conversions.volume_units', []));
     }
 
     /**
@@ -162,5 +164,24 @@ class ConversionService
     public function getUnits(): array
     {
         return $this->units;
+    }
+
+    protected function orderUnits(array $units): array
+    {
+        $orderedUnits = [];
+
+        foreach ($this->displayOrder as $unitKey) {
+            if (array_key_exists($unitKey, $units)) {
+                $orderedUnits[$unitKey] = $units[$unitKey];
+            }
+        }
+
+        foreach ($units as $unitKey => $unit) {
+            if (!array_key_exists($unitKey, $orderedUnits)) {
+                $orderedUnits[$unitKey] = $unit;
+            }
+        }
+
+        return $orderedUnits;
     }
 }

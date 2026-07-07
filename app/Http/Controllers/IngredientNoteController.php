@@ -14,6 +14,7 @@ class IngredientNoteController extends Controller
             $validated = $request->validate([
                 'ingredient_name' => 'required|string|max:255',
                 'notes' => 'required|string|max:1000',
+                'is_favorite' => ['nullable', 'boolean'],
             ], [
                 'ingredient_name.required' => 'Ingredient name is required.',
                 'ingredient_name.max' => 'Ingredient name must not exceed 255 characters.',
@@ -23,6 +24,7 @@ class IngredientNoteController extends Controller
 
             $validated['ingredient_name'] = trim((string) $validated['ingredient_name']);
             $validated['notes'] = trim((string) $validated['notes']);
+            $validated['is_favorite'] = (bool) ($validated['is_favorite'] ?? false);
 
             if ($validated['ingredient_name'] === '' || $validated['notes'] === '') {
                 return response()->json([
@@ -70,6 +72,7 @@ class IngredientNoteController extends Controller
             $validated = $request->validate([
                 'ingredient_name' => 'required|string|max:255',
                 'notes' => 'required|string|max:1000',
+                'is_favorite' => ['nullable', 'boolean'],
             ], [
                 'ingredient_name.required' => 'Ingredient name is required.',
                 'ingredient_name.max' => 'Ingredient name must not exceed 255 characters.',
@@ -79,6 +82,7 @@ class IngredientNoteController extends Controller
 
             $validated['ingredient_name'] = trim((string) $validated['ingredient_name']);
             $validated['notes'] = trim((string) $validated['notes']);
+            $validated['is_favorite'] = (bool) ($validated['is_favorite'] ?? false);
 
             if ($validated['ingredient_name'] === '' || $validated['notes'] === '') {
                 return response()->json([

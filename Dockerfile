@@ -52,7 +52,7 @@ RUN php artisan package:discover --ansi
 
 # Build frontend assets
 RUN if [ -f package.json ]; then \
-      npm install && npm run build; \
+      npm ci && npm run build; \
     fi
 
 # Create required directories

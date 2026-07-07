@@ -12,5 +12,10 @@ class IngredientNote extends Model
     protected $fillable = [
         'ingredient_name',
         'notes',
+        'is_favorite',
+    ];
+
+    protected $casts = [
+        'is_favorite' => 'boolean',
     ];
 }

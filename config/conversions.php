@@ -2,6 +2,11 @@
 
 return [
     'volume_units' => [
+        'ml' => [
+            'name' => 'Milliliter',
+            'symbol' => 'mL',
+            'ml_value' => 1.0,
+        ],
         'tsp' => [
             'name' => 'Teaspoon',
             'symbol' => 'tsp',
@@ -22,25 +27,20 @@ return [
             'symbol' => 'cup',
             'ml_value' => 236.5882365,
         ],
-        'ml' => [
-            'name' => 'Milliliter',
-            'symbol' => 'mL',
-            'ml_value' => 1.0,
-        ],
-        'liter' => [
-            'name' => 'Liter',
-            'symbol' => 'L',
-            'ml_value' => 1000.0,
+        'pint' => [
+            'name' => 'Pint',
+            'symbol' => 'pt',
+            'ml_value' => 473.176473015625,
         ],
         'quart' => [
             'name' => 'Quart',
             'symbol' => 'qt',
             'ml_value' => 946.35294603125,
         ],
-        'pint' => [
-            'name' => 'Pint',
-            'symbol' => 'pt',
-            'ml_value' => 473.176473015625,
+        'liter' => [
+            'name' => 'Liter',
+            'symbol' => 'L',
+            'ml_value' => 1000.0,
         ],
         'gallon' => [
             'name' => 'Gallon',
