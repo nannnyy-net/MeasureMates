@@ -66,12 +66,14 @@ RUN if [ -f package.json ] && [ -f package-lock.json ]; then \
       echo "package.json or package-lock.json missing; skipping frontend build"; \
     fi
 
+# Create Laravel storage symlink during image build
+RUN php artisan storage:link --force || true
+
 # Production hardening
 RUN php artisan optimize:clear --no-interaction || true
 
-
-# Fix permissions (Railway may mount volumes)
-RUN chown -R appuser:appuser /app/storage /app/bootstrap/cache
+# Fix permissions
+RUN chown -R appuser:appuser /app/storage /app/bootstrap/cache /app/public
 
 USER appuser
 
