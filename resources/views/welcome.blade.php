@@ -132,7 +132,7 @@
                         <div class="flex flex-col gap-3 md:grid md:grid-cols-9 md:items-end md:gap-2">
                             <!-- From Unit -->
                             <div class="w-full md:col-span-4">
-                                <label for="fromUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">From</label>
+                                <label for="fromUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Smaller Unit</label>
                                 <select id="fromUnit" class="mm-input font-medium py-3 w-full">
                                     @foreach($units as $key => $unit)
                                         <option value="{{ $key }}" {{ $key == 'cup' ? 'selected' : '' }}>{{ $unit['name'] }} ({{ $unit['symbol'] }})</option>
@@ -151,7 +151,7 @@
                             
                             <!-- To Unit -->
                             <div class="w-full md:col-span-4">
-                                <label for="toUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">To</label>
+                                <label for="toUnit" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Larger Unit</label>
                                 <select id="toUnit" class="mm-input font-medium py-3 w-full">
                                     @foreach($units as $key => $unit)
                                         <option value="{{ $key }}" {{ $key == 'tbsp' ? 'selected' : '' }}>{{ $unit['name'] }} ({{ $unit['symbol'] }})</option>
@@ -544,7 +544,44 @@
             }
         }
 
-        // Swap unit selections
+        // Normalize unit order so: fromUnit is always the smaller unit, toUnit is always the larger unit.
+        // This must be the single source of truth and is called on load, reset, swap, and whenever unit selections change.
+        function normalizeUnitOrder() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            if (!fromSelect || !toSelect) return;
+
+            const fromUnit = fromSelect.value;
+            const toUnit = toSelect.value;
+            if (!fromUnit || !toUnit) return;
+            if (fromUnit === toUnit) return;
+
+            // Uses the same ml hierarchy as the backend (see config/conversions.php)
+            const mlByUnit = {
+                ml: 1.0,
+                tsp: 4.92892159375,
+                tbsp: 14.78676478125,
+                floz: 29.5735295625,
+                cup: 236.5882365,
+                pint: 473.176473015625,
+                quart: 946.35294603125,
+                liter: 1000.0,
+                gallon: 3785.411784125,
+            };
+
+            const fromMl = mlByUnit[fromUnit];
+            const toMl = mlByUnit[toUnit];
+            if (!Number.isFinite(fromMl) || !Number.isFinite(toMl)) return;
+
+            // If currently reversed, swap values.
+            if (fromMl > toMl) {
+                const temp = fromSelect.value;
+                fromSelect.value = toSelect.value;
+                toSelect.value = temp;
+            }
+        }
+
+        // Swap unit selections (still normalizes afterward so smaller remains first)
         function swapUnits() {
             const fromSelect = document.getElementById('fromUnit');
             const toSelect = document.getElementById('toUnit');
@@ -552,8 +589,11 @@
             const temp = fromSelect.value;
             fromSelect.value = toSelect.value;
             toSelect.value = temp;
+
+            normalizeUnitOrder();
             showNotification('Units swapped.');
         }
+
 
         // Reset converter inputs and output display
         function resetConverter() {
@@ -568,8 +608,13 @@
             updateFavoriteStar(false);
             lastResult = '';
             lastPhrase = '';
+
+            // Ensure unit order is still correct after reset.
+            normalizeUnitOrder();
+
             showNotification('Converter reset.');
         }
+
 
         // Update the visual state of the favorite star
         function updateFavoriteStar(isFav) {
@@ -1574,6 +1619,20 @@
         // Initialize editor state on load
         (function initIngredientNotesNotepad() {
             window.__notesFavorite = {};
+
+            // Initialize unit dropdown order (also fixes any persisted/restored reversed state)
+            // Default for new visitors should remain: smaller=ml, larger=gallon.
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            if (fromSelect && toSelect) {
+                // If the page was loaded with the intended defaults in markup, this is a no-op.
+                normalizeUnitOrder();
+
+                // Ensure every user change re-normalizes.
+                fromSelect.addEventListener('change', normalizeUnitOrder);
+                toSelect.addEventListener('change', normalizeUnitOrder);
+            }
+
 
             // restore draft to textarea + title
             notesRestoreDraft();
