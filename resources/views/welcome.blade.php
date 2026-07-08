@@ -292,24 +292,16 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
                                 Save Note
                             </button>
-                            <button type="button" onclick="notesEdit()" class="mm-tool-btn" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>
-                                Edit
-                            </button>
-                            <button type="button" onclick="notesDelete()" class="mm-tool-btn" title="Delete">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                                Delete
+
+                            <button type="button" onclick="notesClearEditor()" class="mm-tool-btn" title="Clear">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                                Clear Note
                             </button>
 
                             <div class="flex-1" style="min-width:220px">
                                 <label class="sr-only" for="notesSearch">Search Notes (Ctrl+F)</label>
                                 <input id="notesSearch" type="text" placeholder="Search notes..." oninput="filterNotes()" class="mm-input text-xs py-2" style="padding-top:9px;padding-bottom:9px;">
                             </div>
-
-                            <button type="button" onclick="notesClearEditor()" class="mm-tool-btn" title="Clear">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
-                                Clear Note
-                            </button>
                         </div>
 
                         <div class="mm-notepad-writing">
@@ -333,7 +325,8 @@
                         @forelse($notes as $note)
                             <div onclick="notesLoadNoteToEditor({{ $note->id }});" style="cursor:pointer;" class="bg-surface/50 border border-border/60 hover:border-border rounded-xl p-4 flex justify-between items-start gap-4 transition-all duration-200" id="note-card-{{ $note->id }}" data-note-id="{{ $note->id }}" data-favorite="{{ (int) $note->is_favorite }}">
                                 <div class="mr-3 shrink-0 flex items-start">
-                                    <button onclick="event.stopPropagation(); toggleNoteFavorite({{ $note->id }});" aria-label="Toggle favorite" title="Toggle favorite" class="p-1">
+                    <button type="button" onclick="event.stopPropagation(); toggleNoteFavorite({{ $note->id }});" aria-label="Toggle favorite" title="Toggle favorite" class="p-1">
+
                                         @if($note->is_favorite)
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
                                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -351,12 +344,6 @@
                                 </div>
                                 @php $noteHasContent = trim((string)($note->notes ?? '')) !== '' @endphp
                                 <div class="flex gap-1 shrink-0">
-                                                    <button onclick="event.stopPropagation(); notesLoadNoteToEditor({{ $note->id }});" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit" aria-label="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                        </svg>
-                                    </button>
-
                                     <button
                                         type="button"
                                         onclick="event.stopPropagation(); printIngredientNote({{ $note->id }});"
@@ -369,12 +356,6 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V2h12v7" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14h12v8H6v-8z" />
-                                        </svg>
-                                    </button>
-
-                                    <button onclick="event.stopPropagation(); notesDelete({{ $note->id }});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete" aria-label="Delete">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </div>
@@ -1152,6 +1133,9 @@
             return `mm_ingredient_notes_draft_${userKey}`;
         }
 
+        // Avoid any accidental focus/active state on page load.
+        // (No autofocus attributes and no editor-button focus calls.)
+
         function notesPersistDraft() {
             const st = notesGetEditorState();
             localStorage.setItem(notesLocalKey(), JSON.stringify({
@@ -1349,25 +1333,6 @@
             showNotification('New note started.');
         }
 
-        function notesEdit() {
-            // If the editor already references a saved note, reload that note into the editor
-            const noteIdEl = document.getElementById('noteId');
-            const currentId = noteIdEl?.value || '';
-            if (currentId) {
-                const card = document.getElementById(`note-card-${currentId}`);
-                if (card) {
-                    notesLoadNoteToEditor(currentId);
-                    return;
-                }
-            }
-
-            // Otherwise load the first visible note card into the editor
-            const first = document.querySelector('#notesListContainer .note-card-visible');
-            if (!first) return;
-            const id = first.getAttribute('data-note-id');
-            if (id) notesLoadNoteToEditor(id);
-        }
-
         async function notesLoadNoteToEditor(id) {
             const card = document.getElementById(`note-card-${id}`);
             if (!card) return;
@@ -1401,58 +1366,6 @@
                 // ignore
             }
         }
-
-        async function notesDelete(noteId = null) {
-            const st = notesGetEditorState();
-            const targetId = noteId ?? st.id;
-            if (!targetId) return;
-            if (!confirm('Delete this ingredient note? This action cannot be undone.')) return;
-
-            try {
-                const response = await fetch(`/notes/${targetId}`, {
-                    method: 'DELETE',
-                    headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN }
-                });
-
-                const data = await response.json().catch(() => ({}));
-
-                if (!response.ok) {
-                    // Missing note can happen if the ID is stale (already deleted elsewhere)
-                    if (response.status === 404) {
-                        const card = document.getElementById(`note-card-${targetId}`);
-                        if (card) {
-                            card.classList.add('fade-out');
-                            setTimeout(() => {
-                                card.remove();
-                                checkNotesEmpty();
-                            }, 300);
-                        }
-
-                        showNotification(data.message || 'This note no longer exists.');
-                        // Reset editor state and local hidden inputs
-                        notesNew();
-                        return;
-                    }
-
-                    throw new Error(data.message || 'Error deleting note.');
-                }
-
-                const card = document.getElementById(`note-card-${targetId}`);
-                if (card) {
-                    card.classList.add('fade-out');
-                    setTimeout(() => {
-                        card.remove();
-                        checkNotesEmpty();
-                    }, 300);
-                }
-
-                showNotification('Note deleted.');
-                notesNew();
-            } catch (e) {
-                showNotification(e.message || 'Error deleting note.');
-            }
-        }
-
 
         function notesClearEditor() {
             notesNew();
@@ -1534,11 +1447,7 @@
                     <p class="text-xs text-text-secondary mt-1 whitespace-pre-wrap" id="note-text-val-${note.id}">${escapeHtml(note.notes)}</p>
                 </div>
                 <div class="flex gap-1 shrink-0">
-                    <button onclick="event.stopPropagation(); notesLoadNoteToEditor(${note.id})" class="p-1 text-text-muted hover:text-accent-primary transition-colors" title="Edit">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                    </button>
+
                     <button
                         type="button"
                         onclick="event.stopPropagation(); printIngredientNote(${note.id});"
@@ -1553,11 +1462,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 14h12v8H6v-8z" />
                         </svg>
                     </button>
-                    <button onclick="event.stopPropagation(); notesDelete(${note.id});" class="p-1 text-text-muted hover:text-red-400 transition-colors" title="Delete">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
+
                 </div>
             `;
 
