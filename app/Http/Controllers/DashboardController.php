@@ -24,10 +24,18 @@ class DashboardController extends Controller
         $notes = IngredientNote::query()->orderByDesc('is_favorite')->orderBy('ingredient_name', 'asc')->get();
 
         if (Auth::check()) {
-            $favorites = Favorite::query()->where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+            $favorites = Favorite::query()
+                ->where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
-            $favorites = collect();
+            // Guests store favorites with user_id = NULL (see FavoriteController@index)
+            $favorites = Favorite::query()
+                ->whereNull('user_id')
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
+
 
         $historyQuery = ConversionHistory::query();
         $search = trim((string) $request->input('history_search', ''));
