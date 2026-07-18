@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favorites', function (Blueprint $table) {
-            $table->id();
-            $table->string('from_unit');
-            $table->string('to_unit');
-            $table->double('amount');
-            $table->timestamps();
-            $table->unique(['from_unit', 'to_unit', 'amount']);
+        Schema::table('recipes', function (Blueprint $table) {
+            //
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favorites');
+        Schema::table('recipes', function (Blueprint $table) {
+            //
+        });
     }
 };

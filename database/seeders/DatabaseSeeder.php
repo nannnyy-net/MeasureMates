@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\IngredientNote;
 use App\Models\ConversionHistory;
-use App\Models\Favorite;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
@@ -68,23 +67,5 @@ class DatabaseSeeder extends Seeder
             'ingredient' => 'Water',
         ]);
 
-        // Seed Favorites
-        Favorite::create([
-            'from_unit' => 'tbsp',
-            'to_unit' => 'cup',
-            'amount' => 1.0,
-        ]);
-
-        Favorite::create([
-            'from_unit' => 'tsp',
-            'to_unit' => 'tbsp',
-            'amount' => 1.0,
-        ]);
-
-        Favorite::create([
-            'from_unit' => 'cup',
-            'to_unit' => 'liter',
-            'amount' => 1.0,
-        ]);
     }
 }

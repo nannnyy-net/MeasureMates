@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConversionHistory;
-use App\Models\Favorite;
 use App\Models\IngredientNote;
 use App\Services\ConversionService;
 use Illuminate\Http\Request;
@@ -22,19 +21,6 @@ class DashboardController extends Controller
     {
         $units = $this->conversionService->getUnits();
         $notes = IngredientNote::query()->orderByDesc('is_favorite')->orderBy('ingredient_name', 'asc')->get();
-
-        if (Auth::check()) {
-            $favorites = Favorite::query()
-                ->where('user_id', Auth::id())
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            // Guests store favorites with user_id = NULL (see FavoriteController@index)
-            $favorites = Favorite::query()
-                ->whereNull('user_id')
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
 
 
         $historyQuery = ConversionHistory::query();
@@ -71,7 +57,6 @@ class DashboardController extends Controller
         return view('welcome', compact(
             'units',
             'notes',
-            'favorites',
             'history',
             'search',
             'unit',
